@@ -20,7 +20,7 @@ To run the app:
 2. Clone this repository:
 
 ```bash
-git clone https://github.com/yourusername/number-base-calculator.git
+git clone https://github.com/Skyquek/Number-Base-Calculator.git
 ```
 
 3. Navigate to the project directory:
