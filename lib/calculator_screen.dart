@@ -292,16 +292,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     });
   }
 
-  // calculates the result
   void calculate() {
-    if (num1Dec.isEmpty) return;
-    if (operand.isEmpty) return;
-    if (num2Dec.isEmpty) return;
+    if (num1Dec.isEmpty || operand.isEmpty || num2Dec.isEmpty) return;
 
-    final double num1 = double.parse(num1Dec);
-    final double num2 = double.parse(num2Dec);
+    final int num1 = int.tryParse(num1Dec) ?? 0;
+    final int num2 = int.tryParse(num2Dec) ?? 0;
 
-    var result = 0.0;
+    var result = 0;
     switch (operand) {
       case Btn.add:
         result = num1 + num2;
@@ -313,20 +310,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         result = num1 * num2;
         break;
       case Btn.divide:
-        result = num1 / num2;
+        if (num2 != 0) {
+          result = num1 ~/ num2; // Using integer division for simplicity
+        } else {
+          // Handle division by zero scenario, maybe show an error message or handle it accordingly
+        }
         break;
       default:
     }
 
     setState(() {
-      num1Dec = result.toStringAsPrecision(3);
-
-      if (num1Dec.endsWith(".0")) {
-        num1Dec = num1Dec.substring(0, num1Dec.length - 2);
-      }
+      num1Dec = result.toString();
+      num1Bin = result.toRadixString(2);
+      num1Hex = result.toRadixString(16);
 
       operand = "";
       num2Dec = "";
+      num2Bin = '';
+      num2Hex = '';
     });
   }
 
@@ -398,6 +399,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         num2Dec += value;
         num2Bin = int.parse(num2Dec).toRadixString(2).toString();
         num2Hex = int.parse(num2Dec).toRadixString(16).toString();
+      } else if (base == 'BIN') {
+        num2Bin += value;
+        num2Dec = int.parse(num2Bin, radix: 2).toString();
+        num2Hex = int.parse(num2Dec).toRadixString(16).toString();
+      } else {
+        num2Hex += value;
+        num2Dec = int.parse(num2Hex, radix: 16).toString();
+        num2Bin = int.parse(num2Dec).toRadixString(2).toString();
       }
     }
 
